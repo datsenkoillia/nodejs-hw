@@ -1,7 +1,6 @@
 import express from "express";
 
-import contactsController from "../../controllers/contacts-controller.js";
-
+import contactsController from "../../controllers/contacts/index.js";
 import { isValidId } from "../../middlewars/index.js";
 
 const contactsRouter = express.Router();
