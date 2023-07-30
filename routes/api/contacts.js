@@ -1,10 +1,11 @@
 import express from "express";
 
-import contactsController from "../../controllers/contacts-controller.js";
-
-import { isValidId } from "../../middlewars/index.js";
+import contactsController from "../../controllers/contacts/index.js";
+import { isValidId, authentication } from "../../middlewars/index.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authentication);
 
 contactsRouter.get("/", contactsController.getAll);
 
