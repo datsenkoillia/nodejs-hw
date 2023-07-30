@@ -4,7 +4,6 @@ import { HttpError } from "../../helpers/index.js";
 const subscriptionUpdate = async (req, res, next) => {
   try {
     const { email, _id } = req.user;
-    console.log(_id);
     const { subscription } = req.body;
 
     let newSubscription;
