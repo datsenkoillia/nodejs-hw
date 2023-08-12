@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import gravatar from "gravatar";
 import { nanoid } from "nanoid";
 
 import User from "../../models/user.js";
@@ -19,15 +20,18 @@ const register = async (req, res, next) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
+    const userAvatarURL = gravatar.url(email, { protocol: "http" });
     const verificationToken = nanoid();
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
+      avatarURL: userAvatarURL,
       verificationToken,
     });
     res.status(201).json({
       email: newUser.email,
+      avatarURL: newUser.avatarURL,
       subscription: newUser.subscription,
     });
 
