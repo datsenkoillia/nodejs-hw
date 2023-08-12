@@ -1,10 +1,6 @@
 import User from "../../models/user.js";
-import { HttpError, createVerifyEmail } from "../../helpers/index.js";
+import { HttpError, createAndSendVerifyEmail } from "../../helpers/index.js";
 import { userEmailJoiSchema } from "../../schemas/users-schemas.js";
-import sgMail from "@sendgrid/mail";
-
-const { SENDGRID_API_KEY } = process.env;
-sgMail.setApiKey(SENDGRID_API_KEY);
 
 const retryVerificationRequest = async (req, res, next) => {
   try {
@@ -25,12 +21,10 @@ const retryVerificationRequest = async (req, res, next) => {
       throw HttpError(400, "Verification has already been passed");
     }
 
-    const verifyEmail = createVerifyEmail({
+    createAndSendVerifyEmail({
       email,
       verificationToken: user.verificationToken,
     });
-
-    await sgMail.send(verifyEmail);
 
     res.json({
       message: "Verification email sent",
