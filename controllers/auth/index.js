@@ -3,6 +3,8 @@ import login from "./login.js";
 import getCurrent from "./getCurrent.js";
 import logout from "./logout.js";
 import subscriptionUpdate from "./subscriptionUpdate.js";
+import verificationRequest from "./verificationRequest.js";
+import retryVerificationRequest from "./retryVerificationRequest.js";
 
 export default {
   register,
@@ -10,4 +12,6 @@ export default {
   getCurrent,
   logout,
   subscriptionUpdate,
+  verificationRequest,
+  retryVerificationRequest,
 };

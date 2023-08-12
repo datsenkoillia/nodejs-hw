@@ -15,4 +15,13 @@ authRouter.post("/users/logout", authentication, authController.logout);
 
 authRouter.patch("/users", authentication, authController.subscriptionUpdate);
 
+authRouter.post("/users/verify", authController.retryVerificationRequest);
+
+authRouter.get(
+  "/users/verify/:verificationToken",
+  authController.verificationRequest
+);
+
+
+
 export default authRouter;

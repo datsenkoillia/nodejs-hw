@@ -1,8 +1,14 @@
 import bcrypt from "bcryptjs";
+import { nanoid } from "nanoid";
+import sgMail from "@sendgrid/mail";
 
 import User from "../../models/user.js";
-import { HttpError } from "../../helpers/index.js";
+import { HttpError, createVerifyEmail } from "../../helpers/index.js";
 import { userJoiSchema } from "../../schemas/users-schemas.js";
+
+const { SENDGRID_API_KEY } = process.env;
+
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 const register = async (req, res, next) => {
   try {
@@ -18,12 +24,21 @@ const register = async (req, res, next) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
+    const verificationToken = nanoid();
 
-    const newUser = await User.create({ ...req.body, password: hashPassword });
+    const newUser = await User.create({
+      ...req.body,
+      password: hashPassword,
+      verificationToken,
+    });
     res.status(201).json({
       email: newUser.email,
       subscription: newUser.subscription,
     });
+
+    const verifyEmail = createVerifyEmail({ email, verificationToken });
+
+    await sgMail.send(verifyEmail);
   } catch (error) {
     next(error);
   }
