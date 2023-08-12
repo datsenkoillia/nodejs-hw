@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import gravatar from "gravatar";
+import { nanoid } from "nanoid";
 
 import User from "../../models/user.js";
-import { HttpError } from "../../helpers/index.js";
+import { HttpError, createAndSendVerifyEmail } from "../../helpers/index.js";
 import { userJoiSchema } from "../../schemas/users-schemas.js";
 
 const register = async (req, res, next) => {
@@ -19,19 +19,19 @@ const register = async (req, res, next) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-    const userAvatarURL = gravatar.url(email, { protocol: "http" });
-    console.log(userAvatarURL);
+    const verificationToken = nanoid();
 
     const newUser = await User.create({
       ...req.body,
       password: hashPassword,
-      avatarURL: userAvatarURL,
+      verificationToken,
     });
     res.status(201).json({
       email: newUser.email,
-      avatarURL: newUser.avatarURL,
       subscription: newUser.subscription,
     });
+
+    createAndSendVerifyEmail({ email, verificationToken });
   } catch (error) {
     next(error);
   }
